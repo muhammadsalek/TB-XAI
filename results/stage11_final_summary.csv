@@ -1,0 +1,19 @@
+Metric,Value
+Validation Precision,0.7370248427393299
+Validation Recall,0.653179190751445
+Validation mAP@0.50,0.7066191044055201
+Validation mAP@0.75,0.33758494882316503
+Validation mAP@0.50:0.95,0.35584156020106217
+Selected confidence threshold,0.4
+Test standard Precision,0.7357403854817256
+Test standard Recall,0.6503067484662577
+Test mAP@0.50,0.7097711436197578
+Test mAP@0.75,0.26098944517179246
+Test mAP@0.50:0.95,0.30788368419235546
+Test TP,108.0
+Test FP,36.0
+Test FN,55.0
+Test Precision @ selected threshold,0.75
+Test Recall @ selected threshold,0.6625766871165644
+Test F1 @ selected threshold,0.7035830618892508
+Test mean matched IoU,0.7367493899435014

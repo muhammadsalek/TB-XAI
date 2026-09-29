@@ -1,0 +1,4 @@
+Split,Images,Label_files,GT_boxes
+train,580,580,875
+val,113,113,173
+test,106,106,163

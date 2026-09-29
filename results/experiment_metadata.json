@@ -1,0 +1,22 @@
+{
+    "project": "TB-XAI",
+    "stage": 11,
+    "task": "TB lesion detection",
+    "architecture": "YOLO26n",
+    "initialization": "Official pretrained YOLO26n",
+    "base_model": "/kaggle/input/notebooks/abdelazizomarrr/tuberculosis-detection-lesion-localization/yolo26n.pt",
+    "own_best_model": "/kaggle/working/TB_XAI_Stage11_YOLO26/tb_xai_yolo26n/weights/best.pt",
+    "dataset_yaml": "/kaggle/working/TB_XAI_CleanSplit/tb_xai.yaml",
+    "image_size": 640,
+    "batch_size": 16,
+    "maximum_epochs": 80,
+    "patience": 15,
+    "optimizer": "AdamW",
+    "initial_learning_rate": 0.001,
+    "weight_decay": 0.0005,
+    "validation_selected_confidence_threshold": 0.4,
+    "localization_iou_threshold": 0.5,
+    "seed": 42,
+    "ultralytics_version": "8.4.165",
+    "gpu": "Tesla T4"
+}
