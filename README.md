@@ -1,185 +1,251 @@
-# AcousticBiomarker-GH
+<div align="center">
 
-**Cough-Acoustic Screening for Respiratory Conditions: On-Device Inference with TensorFlow Lite.**
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f2027,50:203a43,100:2c5364&height=200&section=header&text=TB-XAI&fontSize=56&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Explainable%20Tuberculosis%20Lesion%20Analysis%20from%20Chest%20X-rays&descAlignY=58&descSize=17" width="100%"/>
 
-[![Live App](https://img.shields.io/badge/Live_App-Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://acoustic-biomarker-gh-salek05.streamlit.app/)
-[![Python](https://img.shields.io/badge/Python-3.10-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![TensorFlow Lite](https://img.shields.io/badge/TensorFlow_Lite-2.15-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/lite)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/Status-Research_Prototype-orange?style=flat-square)]()
+<img src="https://avatars.githubusercontent.com/u/180872571?v=4" width="120" height="120" style="border-radius:50%;border:3px solid #4F9DFF;"/>
 
-> **Research status.** This is a research prototype and interface demonstrator, not a validated diagnostic device. Model inference on uploaded audio is real. The Advanced Analytics and Explainability tabs currently show illustrative placeholder statistics. See [Validation Status](#validation-status) before citing any performance figure.
+### Md Salek Miah
+**Statistician · Epidemiologist · ML Researcher · GBD Collaborator, IHME**
+
+<a href="https://tb-xai-salek.streamlit.app/"><img src="https://img.shields.io/badge/Live_Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white&labelColor=0d1117"/></a>
+<a href="https://github.com/muhammadsalek"><img src="https://img.shields.io/badge/GitHub-muhammadsalek-181717?style=for-the-badge&logo=github&logoColor=white&labelColor=0d1117"/></a>
+<a href="https://orcid.org/0009-0005-5973-461X"><img src="https://img.shields.io/badge/ORCID-0009--0005--5973--461X-A6CE39?style=for-the-badge&logo=orcid&logoColor=white&labelColor=0d1117"/></a>
+<a href="https://www.youtube.com/@SalekResearch"><img src="https://img.shields.io/badge/YouTube-Salek%20Data%20Lab-FF0000?style=for-the-badge&logo=youtube&logoColor=white&labelColor=0d1117"/></a>
+
+<a href="https://tb-xai-salek.streamlit.app/">
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&duration=3000&pause=1000&color=4F9DFF&center=true&vCenter=true&width=640&lines=ConvNeXtTiny+%E2%86%92+Temperature+Scaling+%E2%86%92+Grad-CAM%2B%2B;YOLO26n+Lesion+Localization+vs.+Saliency+Maps;Failure+%C2%B7+Subgroup+%C2%B7+Calibration+Analysis;Chest+X-ray+%E2%86%92+Explainable+Output" alt="Typing SVG" />
+</a>
+
+</div>
+
+<div align="center">
+
+[![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge&labelColor=0d1117)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Research_Prototype-orange?style=for-the-badge&labelColor=0d1117)]()
+[![Release](https://img.shields.io/badge/Release-v1.0--models-4F9DFF?style=for-the-badge&labelColor=0d1117)](https://github.com/muhammadsalek/TB-XAI/releases)
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![PyTorch/TF](https://img.shields.io/badge/Deep_Learning-ConvNeXtTiny-EE4C2C?style=flat-square&logoColor=white)
+![YOLO](https://img.shields.io/badge/YOLO26n-Detection-00FFFF?style=flat-square&logoColor=black)
+![Grad-CAM](https://img.shields.io/badge/XAI-Grad--CAM%20%2F%20Grad--CAM++-8b5cf6?style=flat-square&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=flat-square&logo=jupyter&logoColor=white)
+
+</div>
+
+> **Research status.** TB-XAI is a research and educational prototype. It is **not** a diagnostic tool. See [Interpreting the Results](#interpreting-the-results) before drawing conclusions from any figure below.
+
+---
 
 ## Overview
 
-AcousticBiomarker-GH combines audio signal processing, a quantized deep-learning classifier, rule-based clinical triage, and structured reporting for cough-based respiratory screening.
+TB-XAI is an end-to-end chest X-ray analysis pipeline that combines deep-learning classification, probability calibration, explainable AI, and object detection. It classifies single vs. multiple annotated TB lesions, explains predictions with Grad-CAM and Grad-CAM++, localizes lesions with YOLO26n, and quantitatively compares saliency-based explanations against detector-based localization.
 
-A 3-second cough recording (`.wav`) is converted to a log-mel spectrogram and passed through a TFLite MobileNetV2 model that outputs probabilities for three classes: Healthy, Symptomatic, and COVID-19. A triage layer maps these probabilities to a clinical action, and the app exports the result as PDF, JSON, CSV, or a compact telemetry packet for low-bandwidth settings.
+**Pipeline:**
 
-## Pipeline
+```
+        Chest X-ray
+            │
+            ▼
+   ConvNeXtTiny Classification        single vs. multiple annotated TB lesions
+            │
+            ▼
+     Temperature Scaling              probability calibration
+            │
+            ▼
+   Grad-CAM / Grad-CAM++              saliency-based explanation
+            │
+            ▼
+   YOLO26n Lesion Localization        bounding-box detection
+            │
+            ▼
+   Localization Comparison            IoU: YOLO26 vs. Grad-CAM vs. Grad-CAM++
+            │
+            ▼
+   Failure & Subgroup Analysis        error cases · calibration · subgroups
+            │
+            ▼
+   Streamlit Web Application          upload · classify · explain · localize
+```
 
-Cough recording (.wav)
-→ Resample to 16 kHz, pad/truncate to 3.0 s
-→ Peak normalization
-→ 128-band log-mel spectrogram
-→ 128 × 94 × 3 input tensor
-→ Quantized MobileNetV2 (TFLite, INT8)
-→ Softmax: Healthy / Symptomatic / COVID-19
-→ Rule-based triage
-→ Clinical report and export
+---
 
 ## Models
 
-- **MobileNetV2** (quantized, ~2.3M parameters) for 3-class cough classification
-- **TensorFlow Lite 2.15** interpreter for on-device inference
-- Stated training corpora: COUGHVID and Virufy (per in-app system panel; see [Validation Status](#validation-status))
+| Model | Role |
+|:--|:--|
+| **ConvNeXtTiny** | Classification of single vs. multiple annotated TB lesions |
+| **Temperature scaling** | Post-hoc calibration for probability reliability |
+| **Grad-CAM / Grad-CAM++** | Visual explanations of classifier decisions |
+| **YOLO26n** | TB lesion localization (bounding boxes) |
 
-## Signal Processing
-
-| Stage | Parameter |
-|---|---|
-| Sample rate | 16,000 Hz |
-| Clip duration | 3.0 s (48,000 samples) |
-| Normalization | Peak amplitude |
-| Mel bands | 128 |
-| FFT size | 2,048 |
-| Hop length | 512 |
-| Frequency range | 0-8,000 Hz |
-| Model input | 128 × 94 × 3 (log-mel replicated across 3 channels) |
+---
 
 ## Main Results
 
-### Live Components
+### Classification (ConvNeXtTiny)
 
-| Component | Status |
-|---|---|
-| Audio preprocessing (`librosa`) | Live, deterministic |
-| TFLite MobileNetV2 inference | Live forward pass |
-| Triage thresholds | Live, rule-based |
-| Inference latency | ~10.6 ms per clip (in-app) |
-| Telemetry packet | 19 bytes, base64-encoded |
-| Exports | JSON, CSV, TXT, PDF with SHA-256 hash |
+| Metric | Test Value |
+|:--|:--:|
+| AUROC | 0.5333 |
+| AUPRC | 0.5847 |
+| Sensitivity | 0.5660 |
+| Specificity | 0.4340 |
+| Temperature | 0.9915 |
+| Decision threshold | 0.4959 |
 
-### Clinical Triage Logic
+### Localization (YOLO26n)
 
-| Condition | Level | Action Code | Suggested Action |
-|---|---|:---:|---|
-| P(COVID) ≥ 0.70 | Critical | 1 | Immediate clinical evaluation, isolation, urgent care escalation |
-| P(COVID) ≥ 0.35 or P(Symptomatic) > 0.50 | Moderate | 2 | Telemedicine consult, PCR testing within 24 h, self-isolation |
-| Otherwise | Stable | 3 | Routine monitoring, standard precautions |
+| Metric | Test Value |
+|:--|:--:|
+| mAP@50 | 0.7098 |
+| mAP@50–95 | 0.3079 |
+| Precision | 0.7357 |
+| Recall | 0.6503 |
+| Selected confidence threshold | 0.40 |
 
-These thresholds are fixed constants, not calibrated cut-points. They are an interface convention to be tuned with decision-curve analysis on real data.
+### Localization Comparison
 
-## Validation Status
+| Method | Mean IoU |
+|:--|:--:|
+| **YOLO26** | **0.5386** |
+| Grad-CAM | 0.0436 |
+| Grad-CAM++ | 0.0370 |
 
-| Component | Status |
-|---|:---:|
-| AUC-ROC / Sensitivity / Specificity / MCC table | Placeholder (fixed demonstration values) |
-| ROC and calibration curves | Simulated for interface design |
-| SHAP-style feature importance | Randomly generated each run |
-| Confusion matrix | Static placeholder |
-| Training/evaluation split, class balance | Not yet documented in this repository |
+### Interpreting the Results
 
-The pipeline and interface are real and reproducible. The reported clinical performance metrics are placeholders describing the target reporting format, not results from an external validation study.
+- **Localization is the strong component.** YOLO26n reaches mAP@50 of 0.71, and its mean IoU with annotated lesions is over 12× higher than either Grad-CAM variant.
+- **Classification is near chance.** An AUROC of 0.53 means the ConvNeXtTiny classifier separates single-lesion from multiple-lesion cases only marginally better than random. The temperature (0.99) shows the model was already close to calibrated, but a calibrated near-chance classifier is not a reliable one.
+- **Saliency maps are not localizers.** Grad-CAM and Grad-CAM++ highlight regions that influence the classifier, which does not match annotated lesion boxes (IoU below 0.05). This supports using a dedicated detector when spatial accuracy matters.
 
-## Dashboard Tabs
+---
 
-| Tab | Contents |
-|---|---|
-| Spectrogram | Log-mel spectrogram and raw waveform |
-| Advanced Analytics | Metrics table, triage distribution, ROC and calibration curves, Kappa / F1 / MCC (placeholders) |
-| Explainability | Feature-importance chart and confusion matrix (placeholders) |
-| Telemetry | 19-byte packet (`struct.pack('>IBBfffB', ...)`): device ID, age, gender, class probabilities, action code |
-| Export | JSON, CSV, and text report with SHA-256 integrity hash |
-| PDF Report | Multi-section clinical PDF via `reportlab` |
+## Analyses Included
+
+| Analysis | Description |
+|:--|:--|
+| **Calibration** | Temperature scaling and reliability assessment |
+| **Explainability** | Grad-CAM and Grad-CAM++ heatmaps |
+| **Localization** | YOLO26n detection with IoU comparison against saliency maps |
+| **Failure analysis** | Inspection of misclassified and missed cases |
+| **Subgroup analysis** | Performance across data subgroups |
+| **Mathematical interpretation** | Gradients, PCA/SVD, and backpropagation (`math/`) |
+| **Dataset splits** | Split manifests and figures for reproducibility (`results/`, `figures/`) |
+
+---
 
 ## Repository Structure
 
 ```
-acoustic-biomarker-gh/
-├── app.py                              # Streamlit application (v2.1)
-├── acoustic_biomarker_quantized.tflite # Quantized MobileNetV2 model
-├── requirements.txt
-├── runtime.txt
+TB-XAI/
+│
+├── .devcontainer/          ← Dev Container configuration
+├── figures/                ← Result and dataset-split figures
+├── math/                   ← Advanced mathematical analysis figures
+├── models/                 ← YOLO26n trained detector
+├── notebooks/              ← End-to-end TB-XAI notebook
+├── results/                ← Metrics and dataset split manifests
+├── streamlit_app.py        ← Interactive web application
+├── packages.txt            ← System-level dependencies
+├── requirements.txt        ← Python dependencies
 └── README.md
 ```
 
-Key functions in `app.py`: `load_model()`, `preprocess_audio()`, `get_triage_level()`, `get_recommendation()`, `generate_telemetry()`, `generate_pdf_report()`.
+---
 
-## Installation
+## Model Weights
+
+| Model | Location |
+|:--|:--|
+| YOLO26n detector | [`models/`](models/) directory |
+| ConvNeXtTiny classifier | GitHub Release [`v1.0-models`](https://github.com/muhammadsalek/TB-XAI/releases) |
+
+---
+
+## Quick Start
 
 ```bash
-git clone https://github.com/muhammadsalek/acoustic-biomarker-gh.git
-cd acoustic-biomarker-gh
+git clone https://github.com/muhammadsalek/TB-XAI.git
+cd TB-XAI
 python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
 
-**requirements.txt**
+Download the ConvNeXtTiny checkpoint from the `v1.0-models` release and place it where `streamlit_app.py` expects it. To reproduce the full analysis, open the notebook in `notebooks/`.
 
-```txt
-streamlit>=1.30.0
-numpy>=1.23.5
-librosa>=0.10.1
-tensorflow>=2.15.0
-matplotlib>=3.7.0
-seaborn>=0.13.0
-scikit-learn>=1.2.2
-pandas>=2.0.0
-plotly>=5.18.0
-scipy>=1.11.0
-reportlab>=4.0.0
-```
+**Live demo:** [tb-xai-salek.streamlit.app](https://tb-xai-salek.streamlit.app/)
 
-**runtime.txt**
+---
 
-```txt
-python-3.10
-```
+## Key Highlights
 
-## Privacy
+| Feature | Details |
+|:--|:--|
+| **Task** | Lesion-level TB chest X-ray analysis |
+| **Classifier** | ConvNeXtTiny (single vs. multiple annotated lesions) |
+| **Calibration** | Temperature scaling |
+| **Explainability** | Grad-CAM · Grad-CAM++ |
+| **Detector** | YOLO26n |
+| **Evaluation** | AUROC/AUPRC · mAP · IoU comparison · failure and subgroup analysis |
+| **Deployment** | Streamlit web app |
 
-- Patient data is held in `st.session_state` (in memory) for the browser session only.
-- Audio is not sent to any external API; inference runs locally through the bundled TFLite interpreter.
-- Refreshing the page resets the session, so export anything needed beforehand.
-
-## Roadmap
-
-- [x] End-to-end audio to spectrogram to TFLite inference
-- [x] Rule-based triage layer
-- [x] JSON / CSV / TXT / PDF export with SHA-256 stamp
-- [x] Low-bandwidth binary telemetry
-- [ ] Replace placeholder analytics with metrics from a documented held-out split
-- [ ] Replace simulated ROC/calibration curves with curves fit to real predictions and labels
-- [ ] Replace random SHAP panel with real SHAP or Integrated Gradients attribution
-- [ ] Publish a model and data card (splits, class balance, deduplication across COUGHVID/Virufy, failure modes)
-- [ ] External prospective validation on a geographically distinct cohort
-- [ ] Bengali / English UI
+---
 
 ## Citation
 
 ```bibtex
-@software{miah_acoustic_biomarker_gh,
+@software{miah_tb_xai_2026,
   author = {Miah, Md Salek},
-  title  = {AcousticBiomarker-GH: A TensorFlow Lite Cough-Acoustic Screening Interface},
+  title  = {TB-XAI: Explainable Tuberculosis Lesion Analysis from Chest X-rays},
   year   = {2026},
-  url    = {https://github.com/muhammadsalek/acoustic-biomarker-gh},
-  note   = {Research prototype; see Validation Status for verified vs. illustrative components}
+  url    = {https://github.com/muhammadsalek/TB-XAI},
+  note   = {Research prototype}
 }
 ```
+
+---
 
 ## Disclaimer
 
 This project is intended for research and educational purposes only.
 
-It is not intended for clinical diagnosis or medical decision-making. All clinical decisions should be validated by healthcare professionals.
+It is not intended for clinical diagnosis or medical decision-making.
 
-## Contact
+---
 
-Md Salek Miah · [saleksta@gmail.com](mailto:saleksta@gmail.com) · [GitHub](https://github.com/muhammadsalek) · [ORCID](https://orcid.org/0009-0005-5973-461X) · [LinkedIn](https://www.linkedin.com/in/md-salek-miah-b34309329/)
+## Author
+
+<table>
+<tr>
+<td width="110" align="center">
+<img src="https://avatars.githubusercontent.com/u/180872571?v=4" width="90" style="border-radius:50%;"/>
+</td>
+<td>
+
+**Md Salek Miah**
+Department of Statistics, Shahjalal University of Science and Technology (SUST), Sylhet-3114, Bangladesh
+Biostatistics, Epidemiology, and Public Health Research Group
+📧 [saleksta@gmail.com](mailto:saleksta@gmail.com)
+
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0005--5973--461X-A6CE39?style=flat-square&logo=orcid&logoColor=white)](https://orcid.org/0009-0005-5973-461X)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Md_Salek_Miah-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/md-salek-miah-b34309329/)
+
+</td>
+</tr>
+</table>
+
+---
 
 ## License
 
-Released under the MIT License.
+MIT License. Copyright (c) 2026 Md Salek Miah.
+
+<div align="center">
+
+*⭐ Star this repo if it helped your research!*
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2c5364,50:203a43,100:0f2027&height=100&section=footer" width="100%"/>
+
+</div>
