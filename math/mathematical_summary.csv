@@ -1,0 +1,14 @@
+Quantity,Value
+Input dimension,1024.0
+Hidden dimension,64.0
+Train sample size,580.0
+Validation sample size,113.0
+Test sample size,106.0
+Gradient-check median relative error,3.3315365675948546e-11
+Spectral norm,1.9230391483549634
+Frobenius norm,11.525397944810516
+Stable rank,35.91994044793431
+90% effective rank,55.0
+95% effective rank,59.0
+Test AUROC,0.6340334638661446
+Test F1,0.6486486486486487
