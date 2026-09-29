@@ -4,7 +4,7 @@
 streamlit
 torch
 torchvision
-ultralytics==8.4.165
+ultralytics-opencv-headless
 numpy
 pandas
 Pillow
@@ -15,5 +15,4 @@ timm
 albumentations
 torchmetrics
 grad-cam
-opencv-python-headless
 requests
