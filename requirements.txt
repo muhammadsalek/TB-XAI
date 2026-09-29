@@ -1,0 +1,19 @@
+# TB-XAI dependencies
+# Based on the end-to-end notebook and Streamlit deployment needs.
+
+streamlit
+torch
+torchvision
+ultralytics==8.4.165
+numpy
+pandas
+Pillow
+matplotlib
+scikit-learn
+scipy
+timm
+albumentations
+torchmetrics
+grad-cam
+opencv-python-headless
+requests
