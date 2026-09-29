@@ -1,0 +1,11 @@
+Metric,Value
+Images analysed,106.0
+Mean lesion count,1.5377358490566038
+Median lesion count,1.5
+Mean lesion area fraction,0.0637923976895849
+YOLO mean IoU,0.5386118394199296
+YOLO median IoU,0.6131922779415668
+Grad-CAM mean IoU,0.04357432979271456
+Grad-CAM++ mean IoU,0.036956783142774764
+YOLO IoU < 0.50 (%),37.735849056603776
+YOLO complete miss (%),12.264150943396226
